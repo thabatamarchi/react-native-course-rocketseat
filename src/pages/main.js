@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react';
 import api from '../services/api';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Main = () => {
+const Main = ({navigation}) => {
   const [ products, setProducts] = useState([]);
   const [ info, setInfo ] = useState({});
   const [page, setPage] = useState(1)
@@ -22,23 +22,27 @@ const Main = () => {
     } catch (err) {
       console.error(err)
     }
-  }, [products]) 
-
-  const renderItem = ({item}) => (
-    <View style={styles.productContainer}>
-      <Text style={styles.productTitle}>{item.title}</Text>
-      <Text style={styles.productDescription}>{item.description}</Text>
-      <TouchableOpacity style={styles.productButton} onPress={() => {}}>
-        <Text style={styles.productButtonText}>Acessar</Text>
-      </TouchableOpacity>
-    </View> 
-  ); 
+  }, [products]);
 
   const loadMore = useCallback(() => {
     if(page === info.pages) return
     const pageNumber = page + 1;
     loadProducts(pageNumber);
-  }, [info, loadProducts, page])
+  }, [info, loadProducts, page]);
+
+  const renderItem = ({item}) => (
+    <View style={styles.productContainer}>
+      <Text style={styles.productTitle}>{item.title}</Text>
+      <Text style={styles.productDescription}>{item.description}</Text>
+      <TouchableOpacity 
+        style={styles.productButton} 
+        onPress={() => {
+          navigation.navigate("Product", { product: item });
+        }}>
+        <Text style={styles.productButtonText}>Acessar</Text>
+      </TouchableOpacity>
+    </View> 
+  ); 
 
   return (
     <View style={styles.container}>
